@@ -16,10 +16,10 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string("title", 500);
-            $table->mediumText("content_text");
-            $table->string("content_image", 200);
-            $table->tinyInteger("status")->nullable(false);
+            $table->string("title", 500)->nullable(true);
+            $table->mediumText("content_text")->nullable(true);
+            $table->string("content_image", 200)->nullable(true);
+            $table->tinyInteger("status");
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });

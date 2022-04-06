@@ -22,6 +22,11 @@ class Controller extends BaseController
         return response()->json($arr);
     }
 
+    public function resp($arr){
+        $arr['status'] = 1;
+        return response()->json($arr);
+    }
+
     /**
      * 404 амжилтгүй
      */

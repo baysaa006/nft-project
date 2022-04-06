@@ -35,5 +35,10 @@ return [
         'client_secret' => env('FB_SECRET'),
         'redirect' => env('APP_URL').'/api/auth/facebook/callback',
     ],
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENTID'),
+        'client_secret' => env('GOOGLE_SECRET'),
+        'redirect' => env('APP_URL').'/api/auth/google/callback',
+    ],
 
 ];

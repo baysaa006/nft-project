@@ -29,11 +29,14 @@ Route::prefix('v1')->group(function () {
             Route::post('own/list', [PostController::class, 'ownPostList']);
             Route::post('timeline/list', [PostController::class, 'timelineList']);
             Route::post('rate', [PostController::class, 'ratePost']);
+            Route::post('make/nft', [PostController::class, 'makeNft']);
         });
 
         Route::prefix('user')->group(function () {
             Route::post('change/avatar', [UserController::class, 'changeAvatar']);
             Route::post('detail', [UserController::class, 'detailUser']);
+            Route::post('connect/wallet', [UserController::class, 'connectWallet']);
+            Route::post('remove/wallet', [UserController::class, 'removeWallet']);
         });
     });
     

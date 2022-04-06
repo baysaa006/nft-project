@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string("title", 500)->nullable(true);
             $table->mediumText("content_text")->nullable(true);
             $table->string("content_image", 200)->nullable(true);
+            $table->string("nft_id", 500)->nullable(true);
             $table->tinyInteger("status");
+            $table->tinyInteger("is_nft");
             $table->bigInteger("like_count");
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

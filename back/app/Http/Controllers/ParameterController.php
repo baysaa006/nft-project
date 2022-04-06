@@ -16,6 +16,9 @@ class ParameterController extends Controller
     public static $NOTIFICATION_READ = 1;
     public static $NOTIFICATION_UNREAD = 0;
 
+    public static $POST_NFT = 1;
+    public static $POST_NOT_NFT = 0;
+
 
     public function listCategory() {
         $categories = Categories::where('status', 1)->get();

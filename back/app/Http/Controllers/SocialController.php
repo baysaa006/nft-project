@@ -21,6 +21,14 @@ class SocialController extends Controller
         return Socialite::driver($provider)->stateless()->redirect();
     }
 
+    public function getField($provider){
+        if($provider == 'facebook'){
+            return 'fb_id';
+        }else if($provider == 'google'){
+            return 'google_id';
+        }
+    }
+
     protected function validateProvider($provider)
     {
         if (!in_array($provider, ['facebook', 'twitter', 'google'])) {
@@ -28,7 +36,7 @@ class SocialController extends Controller
         }
     }
 
-    public function loginWithFacebook($provider)
+    public function loginWithSocial($provider)
     {
         $validated = $this->validateProvider($provider);
         if (!is_null($validated)) {
@@ -37,9 +45,11 @@ class SocialController extends Controller
 
         try {
 
+            $field = $this->getField($provider);
+
             $user = Socialite::driver($provider)->stateless()->user();
 
-            $ourUser = User::where('fb_id', $user->id)->first();
+            $ourUser = User::where($field, $user->id)->first();
 
             if ($ourUser) {
                 $token = $ourUser->createToken('auth_token')->plainTextToken;
@@ -49,19 +59,24 @@ class SocialController extends Controller
                 $existmail = User::where('email', $user->email)->first();
 
                 if ($existmail) {
-                    $existmail->google_id = $user->id;
+
+                    $existmail->{$field} = $user->id;    
+                    $existmail->avatar = $user->avatar;
                     $existmail->update();
 
                     $token = $existmail->createToken('auth_token')->plainTextToken;
                     return $this->suc(["access_token" => $token]);
                 }
-
-                $ourUser = User::create([
+                $arr = [
                     'nickname' => $user->name,
                     'email' => $user->email,
                     'fb_id' => $user->id,
-                    'status' => 1
-                ]);
+                    'avatar'=>$user->avatar,
+                    'status' => 1,
+                    $field =>$user->id
+                ];
+                
+                $ourUser = User::create($arr);
 
                 $token = $ourUser->createToken('auth_token')->plainTextToken;
                 return $this->suc(["access_token" => $token]);

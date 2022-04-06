@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parameters', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->string("table_name", 45)->nullable(false);
-            $table->string("col_name", 45)->nullable(false);
-            $table->string("value", 50)->nullable(false);
-            $table->string("text", 500)->nullable(false);
+            $table->unsignedBigInteger('user_id');
+            $table->dateTime("created_at");
+            $table->string('title', 100);
+            $table->string('content', 500);
+            $table->tinyInteger('unread');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parameters');
+        Schema::dropIfExists('notifications');
     }
 };

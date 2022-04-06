@@ -4,6 +4,7 @@ use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,13 @@ Route::prefix('v1')->group(function () {
             Route::post('create', [PostController::class, 'storePost']);
             Route::post('update', [PostController::class, 'updatePost']);
             Route::post('own/list', [PostController::class, 'ownPostList']);
+            Route::post('timeline/list', [PostController::class, 'timelineList']);
+            Route::post('rate', [PostController::class, 'ratePost']);
+        });
+
+        Route::prefix('user')->group(function () {
+            Route::post('change/avatar', [UserController::class, 'changeAvatar']);
+            Route::post('detail', [UserController::class, 'detailUser']);
         });
     });
     
@@ -33,4 +41,4 @@ Route::prefix('v1')->group(function () {
 
 
 Route::get('auth/{provider}', [SocialController::class, 'socialRedirect']);
-Route::get('auth/{provider}/callback', [SocialController::class, 'loginWithFacebook']);
+Route::get('auth/{provider}/callback', [SocialController::class, 'loginWithSocial']);

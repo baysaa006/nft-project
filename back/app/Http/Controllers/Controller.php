@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
+use DateTime;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -15,7 +17,6 @@ class Controller extends BaseController
      * Амжилттай
      */
     public function suc($arr){
-        $arr['status'] = 1;
         if(!isset($arr['message'])){
             $arr['message'] = 'Амжилттай';
         }
@@ -23,7 +24,6 @@ class Controller extends BaseController
     }
 
     public function resp($arr){
-        $arr['status'] = 1;
         return response()->json($arr);
     }
 
@@ -31,10 +31,29 @@ class Controller extends BaseController
      * 404 амжилтгүй
      */
     public function not($arr){
-        $arr['status'] = 0;
         if(!isset($arr['message'])){
             $arr['message'] = 'Илэрцгүй';
         }
         return response()->json($arr, 404);
+    }
+
+    /**
+     * 409 Мэдээлэл давхардаж байна
+     */
+    public function duplicated($arr){
+        if(!isset($arr['message'])){
+            $arr['message'] = 'Мэдээлэл давхардаж байна';
+        }
+        return response()->json($arr, 409);
+    }
+
+    public function sendNotification($userId, $title, $content) {
+        $notification = new Notification();
+        $notification->user_id = $userId;
+        $notification->title = $title;
+        $notification->content = $content;
+        $notification->unread = ParameterController::$NOTIFICATION_UNREAD;
+        $notification->created_at = new DateTime();
+        $notification->save();
     }
 }

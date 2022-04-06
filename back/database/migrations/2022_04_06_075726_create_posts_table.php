@@ -20,6 +20,7 @@ return new class extends Migration
             $table->mediumText("content_text")->nullable(true);
             $table->string("content_image", 200)->nullable(true);
             $table->tinyInteger("status");
+            $table->bigInteger("like_count");
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });

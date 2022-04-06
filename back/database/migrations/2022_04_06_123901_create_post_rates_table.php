@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parameters', function (Blueprint $table) {
+        Schema::create('post_rates', function (Blueprint $table) {
             $table->id();
-            $table->string("table_name", 45)->nullable(false);
-            $table->string("col_name", 45)->nullable(false);
-            $table->string("value", 50)->nullable(false);
-            $table->string("text", 500)->nullable(false);
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('user_id');
+            $table->dateTime("created_at");
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('post_id')->references('id')->on('posts');
         });
     }
 
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parameters');
+        Schema::dropIfExists('post_rates');
     }
 };

@@ -11,30 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function makeNft(Request $request){
-        $request->validate([
-            'postId' => 'required',
-            'tokenId' => 'required',
-        ], [
-            'postId.required' => 'Контентийг ID-г оруулна уу',
-            'tokenId.required'=>'Token ID-г оруулнауу'
-        ]);
-
-        $postId = $request->input("postId");
-        $tokenId = $request->input("tokenId");
-
-        $post = Post::find($postId);
-
-        if(!$post){
-            return $this->not(['message'=>'Контент олдсонгүй']);
-        }
-
-        $post->nft_id = $tokenId;
-        $post->is_nft = ParameterController::$POST_NFT;
-        $post->update();
-
-        return $this->suc([]);
-    }
 
     public function ratePost(Request $request)
     {
@@ -102,7 +78,7 @@ class PostController extends Controller
         }
 
         if ($request->hasFile('content_image')) {
-            $path = date('Y/m') . "/post";
+            $path = $this->getStoragePath("post");
             $image = $request->file('content_image')->store($path);
             $post->content_image = $image;
         }
@@ -137,7 +113,7 @@ class PostController extends Controller
         $userId =  Auth::user()->id;
 
         if ($request->hasFile('content_image')) {
-            $path = date('Y/m') . "/post";
+            $path = $this->getStoragePath("post");
             $image = $request->file('content_image')->store($path);
         }
 

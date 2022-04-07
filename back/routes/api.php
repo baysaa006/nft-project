@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NftController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,7 @@ use App\Http\Controllers\UserController;
 */
 
 Route::prefix('v1')->group(function () {
+    Route::middleware('auth:sanctum')->post('logout', [UserController::class, 'logout']);
     Route::prefix('param')->group(function () {
         Route::post('/category/list', [ParameterController::class, 'listCategory']);
     });
@@ -30,6 +32,10 @@ Route::prefix('v1')->group(function () {
             Route::post('timeline/list', [PostController::class, 'timelineList']);
             Route::post('rate', [PostController::class, 'ratePost']);
             Route::post('make/nft', [PostController::class, 'makeNft']);
+        });
+
+        Route::prefix('nft')->group(function () {
+            Route::post('generate', [NftController::class, 'makeNft']);
         });
 
         Route::prefix('user')->group(function () {
@@ -45,3 +51,4 @@ Route::prefix('v1')->group(function () {
 
 Route::get('auth/{provider}', [SocialController::class, 'socialRedirect']);
 Route::get('auth/{provider}/callback', [SocialController::class, 'loginWithSocial']);
+Route::get('auth/{provider}/verify', [SocialController::class, 'verifyAccessToken']);

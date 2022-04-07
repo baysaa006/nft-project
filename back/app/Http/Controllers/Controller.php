@@ -16,23 +16,33 @@ class Controller extends BaseController
     /**
      * Амжилттай
      */
-    public function suc($arr){
+    public function notEqual($arr=[]){
+        if(!isset($arr['message'])){
+            $arr['message'] = 'Ижил утга биш байна.';
+        }
+        return response()->json($arr, 406);
+    }
+
+    /**
+     * Амжилттай
+     */
+    public function suc($arr=[]){
         if(!isset($arr['message'])){
             $arr['message'] = 'Амжилттай';
         }
         return response()->json($arr);
     }
 
-    public function resp($arr){
+    public function resp($arr=[]){
         return response()->json($arr);
     }
 
     /**
      * 404 амжилтгүй
      */
-    public function not($arr){
+    public function not($arr=[]){
         if(!isset($arr['message'])){
-            $arr['message'] = 'Илэрцгүй';
+            $arr['message'] = 'Мэдээлэл үүсээгүй байна';
         }
         return response()->json($arr, 404);
     }
@@ -55,5 +65,9 @@ class Controller extends BaseController
         $notification->unread = ParameterController::$NOTIFICATION_UNREAD;
         $notification->created_at = new DateTime();
         $notification->save();
+    }
+
+    public function getStoragePath($path){
+        return 'public/'.date('Y/m') . "/".$path;
     }
 }

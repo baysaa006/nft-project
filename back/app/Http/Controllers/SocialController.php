@@ -7,10 +7,74 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use GuzzleHttp\Client;
 use Exception;
 
 class SocialController extends Controller
 {
+
+    public function verifyAccessToken(Request $request) {
+        $accesToken = $request->input('accessToken');
+        $userId = $request->input('userId');
+        $email = $request->input('email');
+        $name = $request->input('name');
+        $provider = $request->input('provider');
+        $avatar = "";
+
+        $params = [
+            'access_token' => $accesToken
+        ];
+
+        $field = $this->getField($provider);
+
+        if($provider == 'facebook'){
+            $httpClient = new Client();
+            $response = $httpClient->get('https://graph.facebook.com/me', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ], 'query' => $params]);
+    
+            $body = json_decode( $response->getBody(), true);
+            $id = $body['id'];
+    
+            if($id != $userId){
+                return $this->notEqual();
+            }
+        }
+
+        $ourUser = User::where($field, $userId)->first();
+
+        if ($ourUser) {
+            $token = $ourUser->createToken('auth_token')->plainTextToken;
+            return $this->suc(["access_token" => $token]);
+        } else {
+
+            $existmail = User::where('email', $email)->first();
+
+            if ($existmail) {
+
+                $existmail->{$field} = $userId;
+                $existmail->update();
+
+                $token = $existmail->createToken('auth_token')->plainTextToken;
+                return $this->suc(["access_token" => $token]);
+            }
+            $arr = [
+                'nickname' => $name,
+                'email' => $email,
+                $field => $userId,
+                'avatar'=>$avatar,
+                'status' => 1,
+            ];
+            
+            $ourUser = User::create($arr);
+
+            $token = $ourUser->createToken('auth_token')->plainTextToken;
+            return $this->suc(["access_token" => $token]);
+        }
+
+    }
+
     public function socialRedirect($provider)
     {
         $validated = $this->validateProvider($provider);

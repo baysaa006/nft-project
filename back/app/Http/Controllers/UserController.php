@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
 
+    public function logout(Request $request) {
+        if ($request->user()) { 
+            $request->user()->tokens()->delete();
+        }
+        return $this->suc([]);
+    }
+
     public function detailUser()
     {
         $userId = Auth::user()->id;
@@ -33,7 +40,7 @@ class UserController extends Controller
             'avatar.required' => 'File-аа оруулна уу'
         ]);
 
-        $path = date('Y/m') . "/avatar";
+        $path = $this->getStoragePath("avatar");
         $image = $request->file('avatar')->store($path);
 
         $userId = Auth::user()->id;
